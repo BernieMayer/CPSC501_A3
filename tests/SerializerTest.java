@@ -11,7 +11,7 @@ import org.junit.Test;
 public class SerializerTest {
 
 	@Test
-	public void testSerialize() {
+	public void testSerialize() throws IllegalArgumentException, IllegalAccessException {
 		String s = "s";
 		Serializer ser = new Serializer();
 		
