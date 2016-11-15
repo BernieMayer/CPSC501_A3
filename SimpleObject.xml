@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serialized>
+  <Object class="Status" id="0">
+    <field name="size" declaringclass="Status">
+      <value>1</value>
+    </field>
+    <field name="isRunning" declaringclass="Status">
+      <value>false</value>
+    </field>
+    <field name="aRandomFloat" declaringclass="Status">
+      <value>0.245</value>
+    </field>
+  </Object>
+</serialized>

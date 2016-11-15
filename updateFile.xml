@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<company>
+  <staff id="200">
+    <firstname>Allen</firstname>
+    <lastname>Kim</lastname>
+    <salary>1</salary>
+    <age>20</age>
+  </staff>
+  <staff id="2">
+    <firstname>Steve</firstname>
+    <lastname>Smith</lastname>
+    <nickname>John</nickname>
+    <salary>20000</salary>
+  </staff>
+</company>

@@ -144,7 +144,7 @@ public class Serializer {
 		}
 		
 		
-		return null;
+		return new Element("Object");
 	}
 	
 	//public 

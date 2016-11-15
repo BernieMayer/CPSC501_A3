@@ -59,6 +59,22 @@ public class XMLFileWriter {
 		}
 	}
 	
+	static void wrtieXMLusingFileName(Document aDoc, String filename)
+	{
+		try {
+			XMLOutputter xmlOutput = new XMLOutputter();
+			xmlOutput.setFormat(Format.getPrettyFormat());
+			if (! filename.contains(".xml"))
+			{
+				filename += ".xml";
+			}
+			xmlOutput.output(aDoc, new FileWriter(filename));
+		} catch (IOException io)
+		{
+			System.out.println(io.getMessage());
+		}
+	}
+	
 	static void writeXML()
 	{
 		try {
