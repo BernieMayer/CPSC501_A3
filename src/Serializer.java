@@ -55,15 +55,7 @@ public class Serializer {
 				
 				if (fieldObj == null)
 				{
-					Element fieldElem = new Element("field");
-					Attribute declaringClass = new Attribute("declaringclass", obj.getClass().getSimpleName());
-					fieldElem.setAttribute(declaringClass);
-					Attribute nameAtt = new Attribute("name", aField.getName());
-					fieldElem.setAttribute(nameAtt);
-					
-					Element valElem = new Element("value").setText("null");
-					
-					fieldElem.addContent(valElem);
+					Element fieldElem = createPrimitiveElement(obj, aField);
 					
 					objectTag.addContent(fieldElem);
 					
@@ -129,6 +121,19 @@ public class Serializer {
 		
 		
 		return d;
+	}
+
+	private Element createPrimitiveElement(Object obj, Field aField) {
+		Element fieldElem = new Element("field");
+		Attribute declaringClass = new Attribute("declaringclass", obj.getClass().getSimpleName());
+		fieldElem.setAttribute(declaringClass);
+		Attribute nameAtt = new Attribute("name", aField.getName());
+		fieldElem.setAttribute(nameAtt);
+		
+		Element valElem = new Element("value").setText("null");
+		
+		fieldElem.addContent(valElem);
+		return fieldElem;
 	}
 
 	private Element createObjectElement(Object fieldObj) {
