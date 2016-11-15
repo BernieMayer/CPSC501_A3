@@ -4,11 +4,9 @@
     <field declaringclass="ClassB" name="aString">
       <value>null</value>
     </field>
-    <field name="aString" />
     <field declaringclass="ClassB" name="stringB">
       <value>null</value>
     </field>
-    <field name="stringB" />
   </Object>
   <object>
     <null />

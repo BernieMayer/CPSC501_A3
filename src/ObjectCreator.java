@@ -28,6 +28,7 @@ public class ObjectCreator {
     	objCreator.start();
     }
     
+    
     public void start()
     {
     	
@@ -46,6 +47,9 @@ public class ObjectCreator {
     	} else if (input.equals("s"))
     	{
     		createSimpleObject();
+    	} else if (input.equals("o"))
+    	{
+    		createComplexObject();
     	}
     	else {
     	input = in.nextLine();
@@ -97,12 +101,107 @@ public class ObjectCreator {
     		XMLFileWriter.wrtieXMLusingFileName(doc, "SimpleObject.xml");
     	} catch (Exception e)
     	{
+    		e.printStackTrace();
     		System.out.println(e);
+    	}	
+    }
+    
+    public void createComplexObject()
+    {
+    	System.out.println("Now create a GameState object");
+    	GameState aGame = createGameStateObject();
+    	Serializer ser = new Serializer();
+    	
+    	try {
+    		Document doc = ser.serialize(aGame);
+    		XMLFileWriter.wrtieXMLusingFileName(doc, "ComplexObject.xml");
+    	} catch (Exception e)
+    	{
+    		System.out.println(e);
+    	}
+    }
+    
+    private GameState createGameStateObject()
+    {
+    	GameState g = new GameState();
+    	for (int i = 0; i < 4; i++)
+    	{
+    		String input;
+    		if (i == 0)
+    		{
+    			System.out.println("Enter a character name (this is a field named characterName of type string) ");
+    			input = in.nextLine();
+    			g.characterName = input;
+    		} else if ( i == 1 )
+    		{
+    			System.out.println("Would you like to create a field object caled aCar of type Car (y) ?");
+    			input = in.nextLine();
+    			if (input.equals("y"))
+    			{
+    				g.aCar = createCarObject();
+    			} else 
+    			{
+    				g.aCar = null;
+    				System.out.println("The gamestate object now has a null reference for aCar");
+    			}
+    		} else if (i == 2)
+    		{
+    			System.out.println("Enter the number of objects in the game scene(primitive of type int)");
+    			input = in.nextLine();
+    			g.numberOfSceneObjects = Integer.parseInt(input);
+    		} else {
+    			System.out.println("Would you like to use this instance of GameState for the field aGameState (g)");
+    			System.out.println("Do you want aGameState to be a new instance (new)");
+    			System.out.println("Do you wnat aGameState to be null (null)");
+    			
+    			
+    			input = in.nextLine();
+    			
+    			if (input.equals("g"))
+    			{
+    				g.aGameState = g;
+    			} else if (input.equals("new")) {
+    				g.aGameState = createGameStateObject();
+    			} else {
+    				g.aGameState = null;
+    			}
+    		}
     	}
     	
     	
-    	
+    	return g;
     }
+    
+    private Car createCarObject()
+    {
+    	Car aCar = new Car();
+    	for (int i = 0; i < 3; i ++)
+    	{
+    		String input;
+    		if (i == 0)
+    		{
+    			System.out.println("Enter in the field model which is a String");
+    			input = in.nextLine();
+    			aCar.model = input;
+    		} else if (i == 1)
+    		{
+    			System.out.println("Enter in the field identifier which is a int");
+    			input = in.nextLine();
+    			aCar.identifier = Integer.parseInt(input);
+    			
+    		} else if (i == 2)
+    		{
+    			System.out.println("Enter in the field name  which is a String");
+    			input = in.nextLine();
+    			aCar.name = input;
+    		}
+    	}
+    	
+    	return aCar;
+    }
+    
+    
+    
     
 
 }

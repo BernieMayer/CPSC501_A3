@@ -12,6 +12,27 @@ import org.junit.Test;
 public class SerializerTest {
 
 	@Test
+	public void testObjectsWithReferencesSerialization() throws IllegalArgumentException, IllegalAccessException
+	{
+		ClassB b = new ClassB();
+		Document doc = new Serializer().serialize(b);
+		try {
+    		XMLFileWriter.wrtieXMLusingFileName(doc, "testObject.xml");
+    	} catch (Exception e)
+    	{
+    		e.printStackTrace();
+    		System.out.println(e);
+    	}
+		
+		List<Element> objs = doc.getRootElement().getChildren();
+		
+		List<Element> fields = objs.get(0).getChildren();
+		
+		assertEquals(b.getClass().getDeclaredFields().length, fields.size());
+		
+	}
+	
+	@Test
 	public void testSerialize() throws IllegalArgumentException, IllegalAccessException {
 		String s = "s";
 		Serializer ser = new Serializer();

@@ -47,7 +47,6 @@ public class Serializer {
 		if (! obj.getClass().isArray())
 		{
 			Field[] fields = obj.getClass().getDeclaredFields();
-			int i = 0;
 			for (Field aField:fields)
 			{
 				aField.setAccessible(true);
@@ -86,7 +85,6 @@ public class Serializer {
 					
 				} else 
 				{
-					System.out.println("i is " + i);
 					Element fieldElem = new Element("field");
 					Attribute nameAttrib = new Attribute("name", aField.getName());
 					fieldElem.setAttribute(nameAttrib);
@@ -103,7 +101,7 @@ public class Serializer {
 					}
 					
 					
-					objectTag.addContent(fieldElem);
+					//objectTag.addContent(fieldElem);
 					
 					
 					//handle object references here
@@ -135,16 +133,28 @@ public class Serializer {
 		fieldElem.addContent(valElem);
 		return fieldElem;
 	}
-
 	private Element createObjectElement(Object fieldObj) {
+		
+		Element objectElement = new Element("object");                                                                                                                                                                                                                                                                                                                                  
 		
 		if (fieldObj == null)
 		{
-			
+			objectElement.addContent(new Element("null"));
+			return objectElement;
 		}
+		String id = Integer.toString(referenceTable.size());
+		Attribute name = new Attribute("class", fieldObj.getClass().getSimpleName());
+		Attribute idAttrib = new Attribute("id", id);
+		ArrayList<Attribute> attribs = new ArrayList<Attribute>();
+		
+		attribs.add(name);
+		attribs.add(idAttrib);
+		
+		objectElement.setAttributes(attribs);
+
 		
 		
-		return new Element("Object");
+		return objectElement;
 	}
 	
 	//public 
