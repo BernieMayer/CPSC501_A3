@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serialized>
+  <Object class="ClassB" id="0">
+    <field declaringclass="ClassB" name="aString">
+      <value>null</value>
+    </field>
+    <field declaringclass="ClassB" name="stringB">
+      <value>null</value>
+    </field>
+  </Object>
+  <object>
+    <null />
+  </object>
+  <object>
+    <null />
+  </object>
+</serialized>

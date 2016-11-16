@@ -15,7 +15,64 @@ public class XMLFileWriter {
 	
 	public static void main(String[] args)
 	{
-		writeXML();
+		modifyXML();
+	}
+	
+	
+	static void modifyXML()
+	{
+		try {
+			
+			SAXBuilder builder = new SAXBuilder();
+			File xmlFile = new File("updateFile.xml");
+			
+			Document doc = (Document) builder.build(xmlFile);
+			Element rootNode = doc.getRootElement();
+			
+			//update staff id attribute
+			Element staff = rootNode.getChild("staff");
+			staff.getAttribute("id").setValue("200");
+	
+			
+			
+			if ( staff.getChild("age") == null)
+				staff.addContent(new Element("age").setText("20")); //Adding age element to staff element
+			
+			staff.getChild("salary").setText("1");
+			
+			staff.removeChild("nickname");
+			
+			XMLOutputter xmlOutput = new XMLOutputter();
+			
+			//display nice nice
+			xmlOutput.setFormat(Format.getPrettyFormat());
+			xmlOutput.output(doc, new FileWriter("updateFile.xml"));
+			
+			System.out.println("File updated!");
+			
+		} catch (IOException io)
+		{
+		    System.out.println(io.getMessage());
+		} catch (JDOMException jdomex)
+		{
+			System.out.println(jdomex.getMessage());
+		}
+	}
+	
+	static void wrtieXMLusingFileName(Document aDoc, String filename)
+	{
+		try {
+			XMLOutputter xmlOutput = new XMLOutputter();
+			xmlOutput.setFormat(Format.getPrettyFormat());
+			if (! filename.contains(".xml"))
+			{
+				filename += ".xml";
+			}
+			xmlOutput.output(aDoc, new FileWriter(filename));
+		} catch (IOException io)
+		{
+			System.out.println(io.getMessage());
+		}
 	}
 	
 	static void writeXML()
@@ -48,7 +105,7 @@ public class XMLFileWriter {
 			
 			//display nice nice
 			xmlOutput.setFormat(Format.getPrettyFormat());
-			xmlOutput.output(doc, new FileWriter("test.xml"));
+			xmlOutput.output(doc, new FileWriter("updateFile.xml"));
 			
 			System.out.println("File Saved!");
 			
@@ -58,4 +115,35 @@ public class XMLFileWriter {
 		}
 	}
 
+	public static void readXML()
+	{
+		SAXBuilder builder = new SAXBuilder();
+		File xmlFile = new File("test.xml");
+		try {
+			
+			Document document = (Document) builder.build(xmlFile);
+			Element rootNode = document.getRootElement();
+			List list = rootNode.getChildren("staff");
+			
+			for (int i = 0; i < list.size(); i++)
+			{
+				Element node = (Element) list.get(i);
+				
+				System.out.println("First Name : " + node.getChildText("firstname"));
+				System.out.println("Last Name : " + node.getChildText("lastname"));
+				System.out.println("Nick Name : " + node.getChildText("nickname"));
+				System.out.println("Salary : " + node.getChildText("salary"));
+				
+				System.out.println("-----------------------");
+			}
+		}
+		catch (IOException io)
+		{
+		    System.out.println(io.getMessage());
+		} catch (JDOMException jdomex)
+		{
+			System.out.println(jdomex.getMessage());
+		}
+		
+	}
 }

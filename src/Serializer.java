@@ -49,7 +49,6 @@ public class Serializer {
 		if (! obj.getClass().isArray())
 		{
 			Field[] fields = obj.getClass().getDeclaredFields();
-			int i = 0;
 			for (Field aField:fields)
 			{
 				aField.setAccessible(true);
@@ -57,15 +56,7 @@ public class Serializer {
 				
 				if (fieldObj == null)
 				{
-					Element fieldElem = new Element("field");
-					Attribute declaringClass = new Attribute("declaringclass", obj.getClass().getSimpleName());
-					fieldElem.setAttribute(declaringClass);
-					Attribute nameAtt = new Attribute("name", aField.getName());
-					fieldElem.setAttribute(nameAtt);
-					
-					Element valElem = new Element("value").setText("null");
-					
-					fieldElem.addContent(valElem);
+					Element fieldElem = createPrimitiveElement(obj, aField);
 					
 					objectTag.addContent(fieldElem);
 					
@@ -84,7 +75,6 @@ public class Serializer {
 					
 				} else 
 				{
-					System.out.println("i is " + i);
 					Element fieldElem = new Element("field");
 					Attribute nameAttrib = new Attribute("name", aField.getName());
 					fieldElem.setAttribute(nameAttrib);
@@ -101,8 +91,9 @@ public class Serializer {
 						d.getRootElement().addContent(objElem);
 					}
 					
-					fieldElem.addContent(ref);
-					objectTag.addContent(fieldElem);
+					
+					//objectTag.addContent(fieldElem);
+
 					
 					
 					//handle object references here
@@ -118,6 +109,7 @@ public class Serializer {
 		}
 		return d;
 	}
+
 
 	/**
 	 * @param obj
@@ -136,10 +128,11 @@ public class Serializer {
 		
 		Element valElem = new Element("value");
 		valElem.setText(aField.get(obj).toString());
-		
+
 		fieldElem.addContent(valElem);
 		return fieldElem;
 	}
+
 
 	private Element createObjectElement(Object object) throws IllegalArgumentException, IllegalAccessException {
 		
@@ -197,9 +190,12 @@ public class Serializer {
 			//handle non array case here
 			return new Element("Array");
 		}
+
 		
 		
+
 		return elem;
+
 	}
 	
 	//public 
