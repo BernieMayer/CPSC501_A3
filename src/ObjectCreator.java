@@ -50,11 +50,43 @@ public class ObjectCreator {
     	} else if (input.equals("o"))
     	{
     		createComplexObject();
+    	} else if (input.equals("p"))
+    	{
+    		createObjectContainingPrimitiveArray();
     	}
-    	else {
-    	input = in.nextLine();
+    	
     	}
+    	
+    }
+    
+    public void createObjectContainingPrimitiveArray()
+    {
+    	Data data = new Data();
+    	System.out.println("Creating a class called Data");
+    	System.out.println("Enter the length for the field aArray which is of type int[] ");
+    	int size = Integer.parseInt(in.nextLine());
+    	int[] array = new int[size];
+    	System.out.println("You will now enter the integers to fill this array");
+    	for (int i = 0; i < size; i++)
+    	{
+    		System.out.println("aArray[" + i + "] is ");
+    		array[i] = Integer.parseInt(in.nextLine());
     	}
+    	data.aArray = array;
+    	System.out.println("Done create an instance of data");
+    	
+    	Serializer ser = new Serializer();
+    	Document d = null;
+		try {
+			d = ser.serialize(data);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	XMLFileWriter.wrtieXMLusingFileName(d, "ArrayObject.xml");
     	
     }
     

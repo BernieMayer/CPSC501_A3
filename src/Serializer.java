@@ -1,5 +1,6 @@
 import org.jdom2.*;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
@@ -56,9 +57,17 @@ public class Serializer {
 				
 				if (fieldObj == null)
 				{
-					Element fieldElem = createPrimitiveElement(obj, aField);
-					
-					objectTag.addContent(fieldElem);
+ 					Element fieldElem = new Element("field");
+ 					Attribute declaringClass = new Attribute("declaringclass", obj.getClass().getSimpleName());
+ 					fieldElem.setAttribute(declaringClass);
+ 					Attribute nameAtt = new Attribute("name", aField.getName());
+ 					fieldElem.setAttribute(nameAtt);
+ 					
+ 					Element valElem = new Element("value").setText("null");
+ 					
+ 					fieldElem.addContent(valElem);
+ 					
+ 					objectTag.addContent(fieldElem);
 					
 				}
 				
@@ -105,6 +114,7 @@ public class Serializer {
 		{
 			//handle arrays here
 			System.out.println("handling array");
+			d.getRootElement().addContent(createArrayElement(obj));
 			
 		}
 		return d;
@@ -181,14 +191,22 @@ public class Serializer {
 				{
 					elem.addContent(createPrimitiveElement(object, aField));
 				} else {
-					this.objectsToSerialize.add(fieldObj);
+					Element reference = new Element("field");
+					if (referenceTable.containsKey(fieldObj))
+					{
+						reference.setText(referenceTable.get(fieldObj).toString());
+					} else {
+						reference.setText(Integer.toString(referenceTable.size()));
+						referenceTable.put(reference, referenceTable.size());
+						this.objectsToSerialize.add(fieldObj);
+					}
 				}
 			}
 			
 			
 		} else {
 			//handle non array case here
-			return new Element("Array");
+			return createArrayElement(object);
 		}
 
 		
@@ -198,7 +216,60 @@ public class Serializer {
 
 	}
 	
-	//public 
+	public Element createArrayElement(Object obj)
+	{
+		Element elem = new Element("object");
+		
+		
+		
+		if (obj.getClass().getComponentType().isArray())
+		{
+			// TODO set the id attribute
+			elem.setAttribute(new Attribute("length", String.valueOf(Array.getLength(obj))));
+			elem.setAttribute(new Attribute("class", obj.getClass().getComponentType().toString()));
+			for (int i = 0; i < Array.getLength(obj); i++)
+			{
+				elem.addContent(createArrayElement(Array.get(obj, i)));
+			}
+		} else {
+			// TODO set the id attribute
+			elem.setAttribute(new Attribute("length", String.valueOf(Array.getLength(obj))));
+			elem.setAttribute(new Attribute("class", obj.getClass().getComponentType().toString()));
+			
+			if (obj.getClass().getComponentType().isPrimitive())
+			{
+				for (int i = 0; i < Array.getLength(obj); i++)
+				{
+					elem.addContent( new Element("value").setText(Array.get(obj, i).toString()));
+				}  
+			} else {
+				
+				for (int i = 0; i < Array.getLength(obj); i++)
+				{
+					Object arrayObj = Array.get(obj, i);
+					if (arrayObj == null)
+					{
+						elem.addContent(new Element("null"));
+					} else {
+						Element reference = new Element("reference");
+						if (referenceTable.containsKey(arrayObj))
+						{
+							reference.setText(referenceTable.get(arrayObj).toString());
+						} else {
+							reference.setText(Integer.toString(referenceTable.size()));
+							referenceTable.put(reference, referenceTable.size());
+							this.objectsToSerialize.add(arrayObj);
+						}
+					}
+				}
+					
+			}
+			
+			
+		}
+		
+		return elem;
+	}
 	
 	
 	
