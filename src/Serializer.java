@@ -7,12 +7,14 @@ import java.util.Map;
 
 public class Serializer {
 	
-	private Document d;
+	//private Document d;
 	private Map referenceTable;
+	private ArrayList<Object> objectsToSerialize;
 	public Serializer()
 	{
-		Document d = new Document(new Element("serialized"));
+		//d = new Document(new Element("serialized"));
 		referenceTable = new IdentityHashMap();
+		objectsToSerialize = new ArrayList<Object>();
 	}
 	
 	public org.jdom2.Document serialize(Object obj) throws IllegalArgumentException, IllegalAccessException
@@ -71,20 +73,8 @@ public class Serializer {
 				
 				if (aField.getType().isPrimitive())
 				{
-					String value = fieldObj.toString();
 					
-				    Element fieldElem = new Element("field");
-				    Attribute nameAttrib = new Attribute("name", aField.getName());
-				    fieldElem.setAttribute(nameAttrib);
-				    
-				    
-				    Attribute declaringClass = new Attribute("declaringclass", obj.getClass().getSimpleName());
-				    fieldElem.setAttribute(declaringClass);
-				    
-				    Element valElem = new Element("value");
-				    valElem.setText(aField.get(obj).toString());
-				    
-				    fieldElem.addContent(valElem);
+				    Element fieldElem = createPrimitiveElement(obj, aField);
 				    
 				    
 				    objectTag.addContent(fieldElem);
@@ -106,11 +96,12 @@ public class Serializer {
 						ref.setText( referenceTable.get(fieldObj).toString());
 					} else {
 						ref.setText(Integer.toString(referenceTable.size()));
+						referenceTable.put(fieldObj, Integer.toString(referenceTable.size()));
 						Element objElem = createObjectElement(fieldObj);
 						d.getRootElement().addContent(objElem);
 					}
 					
-					
+					fieldElem.addContent(ref);
 					objectTag.addContent(fieldElem);
 					
 					
@@ -125,21 +116,90 @@ public class Serializer {
 			System.out.println("handling array");
 			
 		}
-		
-		
-		
 		return d;
 	}
 
-	private Element createObjectElement(Object fieldObj) {
+	/**
+	 * @param obj
+	 * @param aField
+	 * @return
+	 * @throws IllegalAccessException
+	 */
+	private Element createPrimitiveElement(Object obj, Field aField) throws IllegalAccessException {
+		Element fieldElem = new Element("field");
+		Attribute nameAttrib = new Attribute("name", aField.getName());
+		fieldElem.setAttribute(nameAttrib);
 		
-		if (fieldObj == null)
+		
+		Attribute declaringClass = new Attribute("declaringclass", obj.getClass().getSimpleName());
+		fieldElem.setAttribute(declaringClass);
+		
+		Element valElem = new Element("value");
+		valElem.setText(aField.get(obj).toString());
+		
+		fieldElem.addContent(valElem);
+		return fieldElem;
+	}
+
+	private Element createObjectElement(Object object) throws IllegalArgumentException, IllegalAccessException {
+		
+		if (object == null)
 		{
+			return new Element("null");
+		}
+		
+		Element elem = new Element("object");
+		String id = (String) referenceTable.get(object);
+		Attribute name = new Attribute("class", object.getClass().getSimpleName());
+		Attribute idAttrib = new Attribute("id", id);
+		ArrayList<Attribute> attribs = new ArrayList<Attribute>();
+		
+		attribs.add(name);
+		attribs.add(idAttrib);
+		
+		elem.setAttributes(attribs);
+		if ( ! object.getClass().isArray())
+		{
+			//get the fields here
+			Field[] fields = object.getClass().getFields();
 			
+			
+			for (Field aField:fields)
+			{
+				aField.setAccessible(true);
+				Object fieldObj = aField.get(object);
+				if (fieldObj == null)
+				{
+					Element fieldElem = new Element("field");
+					Attribute declaringClass = new Attribute("declaringclass", object.getClass().getSimpleName());
+					fieldElem.setAttribute(declaringClass);
+					Attribute nameAtt = new Attribute("name", aField.getName());
+					fieldElem.setAttribute(nameAtt);
+					
+					Element valElem = new Element("value").setText("null");
+					
+					fieldElem.addContent(valElem);
+					
+					elem.addContent(fieldElem);
+					
+				}
+				
+				if (fieldObj.getClass().isPrimitive())
+				{
+					elem.addContent(createPrimitiveElement(object, aField));
+				} else {
+					this.objectsToSerialize.add(fieldObj);
+				}
+			}
+			
+			
+		} else {
+			//handle non array case here
+			return new Element("Array");
 		}
 		
 		
-		return null;
+		return elem;
 	}
 	
 	//public 
