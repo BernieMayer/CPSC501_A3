@@ -1,5 +1,6 @@
 
 import java.util.Scanner;
+import java.util.Vector;
 
 import org.jdom2.Document;
 public class ObjectCreator {
@@ -35,11 +36,12 @@ public class ObjectCreator {
     	
     	printMenu();
     	
-    	String input = in.nextLine();
+    	String input;
     	boolean runCreator = true;
     	
     	while (runCreator) {
-    	System.out.println(input);
+    	input = in.nextLine();
+    	//System.out.println(input);
     	
     	if (input.equals("q"))
     	{
@@ -53,9 +55,79 @@ public class ObjectCreator {
     	} else if (input.equals("p"))
     	{
     		createObjectContainingPrimitiveArray();
+    	} else if (input.equals("r"))
+    	{
+    		createObjectContainingReferencesArray();
+    	} else if (input.equals("c"))
+    	{
+    		createVectorCollection();
     	}
+    	//input = "";
     	
     	}
+    	
+    }
+    
+    public void createVectorCollection()
+    {
+    	Vector<String> aVec = new Vector();
+    	
+    	System.out.println("Creating a class called Vector");
+    	System.out.println("Enter the number of strings to put into the vector");
+    	
+    	int numVecs = Integer.parseInt(in.nextLine());
+    	for (int i = 0; i < numVecs; i++)
+    	{
+    		System.out.println("Enter a string");
+    		aVec.add(in.nextLine());
+    	}
+    	System.out.print("Done creating a vector");
+    	
+    	Serializer ser = new Serializer();
+    	Document d = null;
+    	try {
+    		d = ser.serialize(aVec);
+    	} catch (Exception e)
+    	{
+    		e.printStackTrace();
+    	}
+    	XMLFileWriter.wrtieXMLusingFileName(d, "vector.xml");
+    	
+    	
+    }
+    
+    public void createObjectContainingReferencesArray()
+    {
+    	Classroom exampleRoom = new Classroom();
+    	
+    	System.out.println("Creating a class called ClassRoom");
+    	System.out.println("Enter the length for the field attendanceList which is of type String[]");
+    	int size = Integer.parseInt(in.nextLine());
+    	String[] names = new String[size];
+    	
+    	System.out.println("You will now enter the Strings to fill this array");
+    	for (int i = 0; i < size; i++)
+    	{
+    		System.out.println("attendanceList[" + i + "] is ");
+    		names[i] = in.nextLine();
+    	}
+    	exampleRoom.attendanceList = names;
+    	System.out.println("Done creating an an instance of Classroom");
+    	
+    	Serializer ser = new Serializer();
+    	Document d = null;
+    	try {
+    		d = ser.serialize(exampleRoom);
+    		XMLFileWriter.wrtieXMLusingFileName(d, "ArrayWithReferencesObject.xml");
+    		System.out.println("Done creating the file");
+    	} catch (Exception e)
+    	{
+    		System.out.println(e);
+    		e.printStackTrace();
+    	}
+    	
+    	
+    	
     	
     }
     

@@ -13,6 +13,28 @@ import org.junit.Test;
 
 public class SerializerTest {
 	
+	
+	@Test 
+	public void testCreatingStatusObject()
+	{
+		Status stat = new Status();
+		stat.aRandomFloat = (float) 0.245;
+		stat.isRunning = false;
+		stat.size = 400;
+		Document d = null;
+		try {
+			d = new Serializer().serialize(stat);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+		XMLFileWriter.wrtieXMLusingFileName(d, "testStatus.xml");
+	}
+	
+	
 	@Test
 	public void testCreateObjectElement()
 	{
@@ -55,8 +77,11 @@ public class SerializerTest {
 			e.printStackTrace();
 		}
 		
+		
 		assertEquals(exp.getChildren().size(), elem.getChildren().size());
-		assertEquals(exp.getChildren(), elem.getChildren());
+		//assertEquals(exp.getChildren(), elem.getChildren());
+		
+		XMLFileWriter.wrtieXMLusingFileName(d, "testCreateObjectElement.xml");
 		
 		
 		
@@ -66,6 +91,8 @@ public class SerializerTest {
 	public void testObjectsWithReferencesSerialization() throws IllegalArgumentException, IllegalAccessException
 	{
 		ClassB b = new ClassB();
+		b.aString = "ab";
+		b.stringB = "ac";
 		Document doc = new Serializer().serialize(b);
 		try {
     		XMLFileWriter.wrtieXMLusingFileName(doc, "testObject.xml");
@@ -80,6 +107,8 @@ public class SerializerTest {
 		List<Element> fields = objs.get(0).getChildren();
 		
 		assertEquals(b.getClass().getDeclaredFields().length, fields.size());
+		
+		XMLFileWriter.wrtieXMLusingFileName(doc, "testObjectsWithReferencesSerialization.xml");
 		
 	}
 	
@@ -97,6 +126,8 @@ public class SerializerTest {
 		{
 			System.out.println(e);
 		}
+		
+		
 		
 		Element r = d.getRootElement();
 		
@@ -135,6 +166,8 @@ public class SerializerTest {
 			System.out.println(e);
 		}
 		
+		XMLFileWriter.wrtieXMLusingFileName(d, "testSerializeFields.xml");
+		
 		Element root = d.getRootElement();
 		
 		List<Element> obj = root.getChildren();
@@ -147,9 +180,9 @@ public class SerializerTest {
 		System.out.println(fields);
 		assertEquals(3, fields.size());
 		
-		//assertEquals("model", fields.get(0).getAttribute("name").getValue());
-		//assertEquals("identifier", fields.get(1).getAttribute("name").getValue());
-		//assertEquals("name", fields.get(2).getAttribute("name").getValue());
+		assertEquals("model", fields.get(0).getAttribute("name").getValue());
+		assertEquals("identifier", fields.get(1).getAttribute("name").getValue());
+		assertEquals("name", fields.get(2).getAttribute("name").getValue());
 		//assertEquals("", fields.get(3).getAttribute("name").getValue());
 		//assertFalse(object == null);
 		//assertNotTrue(object, null);

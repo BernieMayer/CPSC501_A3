@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <serialized>
   <Object class="ClassB" id="0">
-    <field declaringclass="ClassB" name="aString">
-      <value>null</value>
-    </field>
-    <field declaringclass="ClassB" name="stringB">
-      <value>null</value>
-    </field>
+    <field name="aString" />
+    <field name="stringB" />
   </Object>
-  <null />
+  <object class="String" id="1">
+    <reference>2</reference>
+  </object>
+  <object class="String" id="3">
+    <reference>2</reference>
+  </object>
+  <object class="CaseInsensitiveComparator" id="2" />
 </serialized>

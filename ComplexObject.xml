@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <serialized>
-  <Object class="GameState" id="0">
-    <field name="characterName" />
-    <field declaringclass="GameState" name="aCar">
-      <value>null</value>
-    </field>
-    <field name="aCar" />
-    <field name="numberOfSceneObjects" declaringclass="GameState">
-      <value>134</value>
-    </field>
-    <field name="aGameState" />
-  </Object>
-  <object class="String" id="1" />
-  <object>
-    <null />
-  </object>
+	<Object class="GameState" id="0">
+		<field name="characterName" />
+		<field declaringclass="GameState" name="aCar">
+			<value>null</value>
+		</field>
+		<field name="numberOfSceneObjects" declaringclass="GameState">
+			<value>134</value>
+		</field>
+		<field name="aGameState" />
+	</Object>
+	<object class="String" id="1">
+		<reference>2</reference>
+	</object>
+	<object class="CaseInsensitiveComparator" id="2" />
 </serialized>

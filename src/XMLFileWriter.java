@@ -114,6 +114,22 @@ public class XMLFileWriter {
 			System.out.println(io.getMessage());
 		}
 	}
+	
+	public static Document createXML_Doc(String filename)
+	{
+		SAXBuilder builder = new SAXBuilder();
+		File xmlFile = new File(filename);
+		Document doc = null;
+		try {
+			doc = (Document) builder.build(xmlFile);
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		
+		return doc;
+		
+	}
 
 	public static void readXML()
 	{

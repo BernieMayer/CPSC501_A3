@@ -69,9 +69,7 @@ public class Serializer {
  					
  					objectTag.addContent(fieldElem);
 					
-				}
-				
-				if (aField.getType().isPrimitive())
+				} else if (aField.getType().isPrimitive())
 				{
 					
 				    Element fieldElem = createPrimitiveElement(obj, aField);
@@ -101,7 +99,7 @@ public class Serializer {
 					}
 					
 					
-					//objectTag.addContent(fieldElem);
+					objectTag.addContent(fieldElem);
 
 					
 					
@@ -117,6 +115,12 @@ public class Serializer {
 			d.getRootElement().addContent(createArrayElement(obj));
 			
 		}
+		
+		for (int i = 0; i < this.objectsToSerialize.size(); i++)
+		{
+			d.getRootElement().addContent(createObjectElement(this.objectsToSerialize.get(i)));
+		}
+		
 		return d;
 	}
 
@@ -185,28 +189,27 @@ public class Serializer {
 					
 					elem.addContent(fieldElem);
 					
-				}
-				
-				if (fieldObj.getClass().isPrimitive())
+				} else if (fieldObj.getClass().isPrimitive())
 				{
 					elem.addContent(createPrimitiveElement(object, aField));
 				} else {
-					Element reference = new Element("field");
+					Element reference = new Element("reference");
 					if (referenceTable.containsKey(fieldObj))
 					{
 						reference.setText(referenceTable.get(fieldObj).toString());
 					} else {
 						reference.setText(Integer.toString(referenceTable.size()));
-						referenceTable.put(reference, referenceTable.size());
+						referenceTable.put(fieldObj, Integer.toString( referenceTable.size()));
 						this.objectsToSerialize.add(fieldObj);
 					}
+					elem.addContent(reference);
 				}
 			}
 			
 			
 		} else {
-			//handle non array case here
-			return createArrayElement(object);
+			//handle array case here
+			return elem.addContent(createArrayElement(object));
 		}
 
 		
@@ -229,7 +232,17 @@ public class Serializer {
 			elem.setAttribute(new Attribute("class", obj.getClass().getComponentType().toString()));
 			for (int i = 0; i < Array.getLength(obj); i++)
 			{
-				elem.addContent(createArrayElement(Array.get(obj, i)));
+				Object arrayObj = Array.get(obj, i);
+				Element reference = new Element("reference");
+				if (referenceTable.containsKey(arrayObj))
+				{
+					reference.setText(referenceTable.get(arrayObj).toString());
+				} else {
+					reference.setText(Integer.toString(referenceTable.size()));
+					referenceTable.put(arrayObj, Integer.toString(referenceTable.size()));
+					this.objectsToSerialize.add(arrayObj);
+				}
+				
 			}
 		} else {
 			// TODO set the id attribute
@@ -257,7 +270,7 @@ public class Serializer {
 							reference.setText(referenceTable.get(arrayObj).toString());
 						} else {
 							reference.setText(Integer.toString(referenceTable.size()));
-							referenceTable.put(reference, referenceTable.size());
+							referenceTable.put(arrayObj, Integer.toString(referenceTable.size()));
 							this.objectsToSerialize.add(arrayObj);
 						}
 					}
